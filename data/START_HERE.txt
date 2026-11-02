@@ -1,0 +1,17 @@
+Round 1 Student Pack - Instructions & Rules
+
+1. Read the challenge PDF first.
+2. Use the CSV file (machine_manual_index.csv) to register machines and manuals.
+3. Upload and index only the three PDFs inside Manuals/:
+   - HP200_Operations_Rev1_0.pdf (HP-OPS-01, Rev 1.0)
+   - HP200_Maintenance_Rev1_0.pdf (HP-MNT-01, Rev 1.0)
+   - AC90_Operations_Maintenance_Rev1_0.pdf (AC-OM-01, Rev 1.0)
+4. Each PDF has three pages. Page numbering starts at 1.
+5. HP-200 has two manuals. Both are valid and must work together.
+6. All machines and specifications are fictional training material.
+7. AI model access and college rules are provided separately.
+8. Development and evaluation have fixed timings.
+
+CRITICAL RULE:
+You must not use the challenge brief, START_HERE.txt or CSV as sources of machine maintenance answers.
+Only the three PDF manuals are knowledge sources.

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}403 Forbidden - Access Denied{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-custom p-5">
+                <div class="text-danger mb-3">
+                    <i class="bi bi-shield-slash fs-1"></i>
+                </div>
+                <h3 class="fw-bold mb-2">403 Forbidden</h3>
+                <p class="text-muted mb-4">{{ message|default:"You do not have permission to access this resource. In accordance with Challenge Rules, this action is restricted by role." }}</p>
+                <div>
+                    <a href="/" class="btn btn-primary px-4">
+                        <i class="bi bi-house-door me-1"></i> Return Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
