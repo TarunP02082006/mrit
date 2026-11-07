@@ -1,4 +1,4 @@
-# Manufacturing Manual Assistant
+# Manufacturing Manual Assistant(mini project)
 ### Round 1 Hackathon Challenge — Python Full Stack + RAG
 
 An AI-powered web application that indexes manufacturing machine PDF manuals, performs strict machine-filtered retrieval, and answers technical engineering questions with exact PDF page references, grounded answers, role-based access control, and **PostgreSQL** persistent storage.
