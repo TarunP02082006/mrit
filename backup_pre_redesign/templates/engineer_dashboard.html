@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}Engineer Assistant - Manufacturing Manual AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="row g-4">
+        <!-- Main Chat and Assistant Column -->
+        <div class="col-lg-8">
+            <!-- Machine Selection Card -->
+            <div class="card card-custom p-4 mb-4">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1"><i class="bi bi-cpu-fill text-primary me-2"></i>Select Machine</h5>
+                        <p class="text-muted small mb-0">Retrieval is strictly isolated to the selected machine's manuals</p>
+                    </div>
+                    <div style="min-width: 280px;">
+                        <select class="form-select form-select-lg border-primary fw-semibold" id="machineSelect" onchange="onMachineChange()">
+                            <option value="M-HP200" selected>HP-200 (Hydraulic Forming Press)</option>
+                            <option value="M-AC90">AC-90 (Air Compressor)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Machine Specs Summary Bar -->
+                <div class="p-3 bg-light rounded-3 border d-flex flex-wrap gap-4 align-items-center text-secondary small" id="machineSpecsBar">
+                    <div><strong class="text-dark">Type:</strong> <span id="specType">Hydraulic Forming Press</span></div>
+                    <div><strong class="text-dark">Fluid:</strong> <span id="specFluid">H46 Hydraulic Oil</span></div>
+                    <div><strong class="text-dark">Filter:</strong> <span id="specFilter">RF-20</span></div>
+                    <div><strong class="text-dark">Manuals:</strong> <span id="specDocs" class="badge bg-secondary">HP-OPS-01, HP-MNT-01</span></div>
+                </div>
+            </div>
+
+            <!-- Question Input Card -->
+            <div class="card card-custom p-4 mb-4">
+                <form id="askForm" onsubmit="event.preventDefault(); submitQuestion();">
+                    <label for="questionInput" class="form-label fw-bold mb-2">
+                        <i class="bi bi-question-circle-fill text-info me-1"></i> Ask Machine Maintenance Question
+                    </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-lg" id="questionInput" placeholder="e.g. What does E17 mean? Or what is the normal operating pressure?" required>
+                        <button class="btn btn-primary px-4 fw-semibold" type="submit" id="askBtn">
+                            <i class="bi bi-send-fill me-1"></i> Ask AI
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Answer Section Card -->
+            <div class="card card-custom p-4" id="answerCard" style="display: none;">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-robot fs-4 text-primary"></i>
+                        <h5 class="fw-bold mb-0">AI Assistant Response</h5>
+                    </div>
+                    <span id="answerStatusBadge" class="badge bg-success fs-6">Answered</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="p-3 bg-light rounded-3 border" id="answerContent" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                </div>
+
+                <!-- Citations Section -->
+                <div id="citationsSection">
+                    <h6 class="fw-bold text-secondary text-uppercase small mb-3">
+                        <i class="bi bi-journal-bookmark-fill me-1"></i> Verified Document Sources & Page Citations
+                    </h6>
+                    <div class="row g-2" id="citationsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History & Machine Isolation Audit Sidebar -->
+        <div class="col-lg-4">
+            <div class="card card-custom p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-secondary me-2"></i>Question History</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="loadHistory()">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                <div class="list-group list-group-flush" id="historyList" style="max-height: 600px; overflow-y: auto;">
+                    <div class="text-center text-muted py-3 small">Loading history...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Inline PDF Page Viewer -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="height: 90vh;">
+        <div class="modal-content h-100">
+            <div class="modal-header bg-dark text-white py-2">
+                <h6 class="modal-title d-flex align-items-center gap-2" id="pdfModalLabel">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                    <span id="pdfModalDocTitle">Document Viewer</span>
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 h-100">
+                <iframe id="pdfFrame" src="" class="w-100 h-100 border-0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const MACHINE_METADATA = {
+    'M-HP200': {
+        type: 'Hydraulic Forming Press',
+        fluid: 'H46 Hydraulic Oil',
+        filter: 'RF-20 Return Filter',
+        docs: 'HP-OPS-01, HP-MNT-01'
+    },
+    'M-AC90': {
+        type: 'Industrial Rotary Air Compressor',
+        fluid: 'AC-L32 Compressor Lubricant',
+        filter: 'AF-10 Air Inlet Filter',
+        docs: 'AC-OM-01'
+    }
+};
+
+function onMachineChange() {
+    const selected = document.getElementById('machineSelect').value;
+    const meta = MACHINE_METADATA[selected];
+    if (meta) {
+        document.getElementById('specType').innerText = meta.type;
+        document.getElementById('specFluid').innerText = meta.fluid;
+        document.getElementById('specFilter').innerText = meta.filter;
+        document.getElementById('specDocs').innerText = meta.docs;
+    }
+}
+
+async function submitQuestion() {
+    const machineId = document.getElementById('machineSelect').value;
+    const question = document.getElementById('questionInput').value.trim();
+    if (!question) return;
+
+    const askBtn = document.getElementById('askBtn');
+    askBtn.disabled = true;
+    askBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Searching...';
+
+    try {
+        const response = await fetch('/api/ask/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ machine_id: machineId, question: question })
+        });
+
+        const data = await response.json();
+
+        // Render Answer
+        document.getElementById('answerCard').style.display = 'block';
+        document.getElementById('answerContent').innerText = data.answer;
+
+        const badge = document.getElementById('answerStatusBadge');
+        if (data.status === 'answered') {
+            badge.className = 'badge bg-success fs-6';
+            badge.innerText = 'Answered with Citations';
+        } else if (data.status === 'insufficient_evidence') {
+            badge.className = 'badge bg-warning text-dark fs-6';
+            badge.innerText = 'Insufficient Evidence';
+        } else {
+            badge.className = 'badge bg-danger fs-6';
+            badge.innerText = 'Error';
+        }
+
+        // Render Citations
+        const citationsList = document.getElementById('citationsList');
+        citationsList.innerHTML = '';
+
+        if (data.citations && data.citations.length > 0) {
+            document.getElementById('citationsSection').style.display = 'block';
+            data.citations.forEach(cit => {
+                const col = document.createElement('div');
+                col.className = 'col-md-6';
+                col.innerHTML = `
+                    <div class="card h-100 border p-3 bg-white shadow-sm">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-dark">${cit.document_id} Rev ${cit.revision}</span>
+                            <span class="badge bg-primary text-white">PDF Page ${cit.page_number}</span>
+                        </div>
+                        <div class="small text-muted mb-2">${cit.snippet}</div>
+                        <button class="btn btn-outline-primary btn-sm mt-auto w-100" onclick="openPdfViewer('${cit.document_id}', ${cit.page_number})">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Open Cited Page ${cit.page_number}
+                        </button>
+                    </div>
+                `;
+                citationsList.appendChild(col);
+            });
+        } else {
+            document.getElementById('citationsSection').style.display = 'none';
+        }
+
+        loadHistory();
+    } catch (err) {
+        alert('Error processing question: ' + err.message);
+    } finally {
+        askBtn.disabled = false;
+        askBtn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Ask AI';
+    }
+}
+
+function openPdfViewer(documentId, pageNumber) {
+    const modalTitle = document.getElementById('pdfModalDocTitle');
+    const iframe = document.getElementById('pdfFrame');
+    modalTitle.innerText = `${documentId} (Viewing Page ${pageNumber})`;
+    iframe.src = `/api/manuals/${documentId}/page/${pageNumber}/#page=${pageNumber}`;
+    const modal = new bootstrap.Modal(document.getElementById('pdfModal'));
+    modal.show();
+}
+
+async function loadHistory() {
+    try {
+        const res = await fetch('/api/history/');
+        const data = await res.json();
+        const list = document.getElementById('historyList');
+        list.innerHTML = '';
+        if (data.length === 0) {
+            list.innerHTML = '<div class="text-center text-muted py-3 small">No question history yet.</div>';
+            return;
+        }
+        data.forEach(item => {
+            const el = document.createElement('a');
+            el.className = 'list-group-item list-group-item-action py-2';
+            el.href = 'javascript:void(0)';
+            el.onclick = () => {
+                document.getElementById('machineSelect').value = item.machine_code;
+                onMachineChange();
+                document.getElementById('questionInput').value = item.question;
+                document.getElementById('answerCard').style.display = 'block';
+                document.getElementById('answerContent').innerText = item.answer;
+            };
+            const statusClass = item.status === 'answered' ? 'text-success' : 'text-warning';
+            el.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-secondary small">${item.machine_model}</span>
+                    <span class="small ${statusClass} fw-semibold">${item.status}</span>
+                </div>
+                <div class="fw-semibold text-truncate small">${item.question}</div>
+            `;
+            list.appendChild(el);
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    onMachineChange();
+    loadHistory();
+
+    const pdfModalEl = document.getElementById('pdfModal');
+    if (pdfModalEl) {
+        pdfModalEl.addEventListener('hidden.bs.modal', () => {
+            const iframe = document.getElementById('pdfFrame');
+            if (iframe) iframe.src = 'about:blank';
+        });
+    }
+});
+</script>
+{% endblock %}
+

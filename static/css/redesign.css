@@ -1,0 +1,522 @@
+/* ==========================================================================
+   Manufacturing Manual Assistant — Modern Enterprise UI/UX Redesign
+   Inspired by Dribbble Enterprise Dashboard Design
+   Palette:
+     Main BG:        #F7F8FA
+     Sidebar/Nav:    #191919
+     Cards:          #FFFFFF
+     Primary:        #1677FF
+     Secondary Cyan: #16B8D4
+     Highlight:      #F5B942
+     Main Text:      #20242C
+     Secondary Text: #7A8290
+     Borders:        #E7E9EE
+     Success:        #168B60
+     Danger:         #DC4545
+   ========================================================================== */
+
+/* --- 1. Global CSS Variables & Base Overrides --- */
+:root {
+    --brand-primary: #1677FF;
+    --brand-primary-hover: #0f62d8;
+    --brand-secondary: #16B8D4;
+    --brand-accent: #168B60;
+    --brand-warning: #F5B942;
+    --brand-danger: #DC4545;
+    
+    --bg-canvas: #F7F8FA;
+    --bg-card: #FFFFFF;
+    --bg-surface: #FAFBFC;
+    --bg-dark-nav: #191919;
+    
+    --text-primary: #20242C;
+    --text-secondary: #7A8290;
+    --text-muted: #9BA2AF;
+    
+    --border-color: #E7E9EE;
+    --border-subtle: #F0F2F5;
+    
+    --card-radius: 16px;
+    --control-radius: 10px;
+    --badge-radius: 6px;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+    --shadow-card: 0 1px 3px rgba(22, 28, 45, 0.03), 0 4px 14px rgba(22, 28, 45, 0.03);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    background-color: var(--bg-canvas) !important;
+    color: var(--text-primary) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #D5D9E0;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #B6BAC2;
+}
+
+/* Typography refinements */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* --- 2. Top Navigation Bar (Dark Charcoal #191919) --- */
+.navbar {
+    background-color: var(--bg-dark-nav) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 0.75rem 1rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    letter-spacing: -0.02em !important;
+    color: #FFFFFF !important;
+}
+
+.navbar-brand i {
+    color: var(--brand-secondary) !important;
+}
+
+.brand-badge {
+    background: rgba(22, 184, 212, 0.16) !important;
+    color: var(--brand-secondary) !important;
+    border: 1px solid rgba(22, 184, 212, 0.35) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    padding: 3px 8px !important;
+    border-radius: 6px !important;
+}
+
+/* Navigation items as modern capsule pills */
+.navbar-nav .nav-link {
+    color: #A3AAB8 !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    padding: 7px 14px !important;
+    margin: 0 3px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.navbar-nav .nav-link i {
+    font-size: 1rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--brand-primary) !important;
+    background-color: rgba(22, 119, 255, 0.14) !important;
+    border: 1px solid rgba(22, 119, 255, 0.28) !important;
+    font-weight: 600 !important;
+}
+
+/* User Role Pills & Profile */
+.role-pill {
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    padding: 5px 12px !important;
+    border-radius: 20px !important;
+    letter-spacing: 0.01em;
+}
+
+.role-admin {
+    background-color: rgba(220, 69, 69, 0.14) !important;
+    color: #FF6B6B !important;
+    border: 1px solid rgba(220, 69, 69, 0.3) !important;
+}
+
+.role-engineer {
+    background-color: rgba(22, 119, 255, 0.14) !important;
+    color: #4D9BFF !important;
+    border: 1px solid rgba(22, 119, 255, 0.3) !important;
+}
+
+.role-supervisor {
+    background-color: rgba(245, 185, 66, 0.16) !important;
+    color: #F8CB6F !important;
+    border: 1px solid rgba(245, 185, 66, 0.35) !important;
+}
+
+/* Logout Button */
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    color: #C2C8D2 !important;
+    border-radius: 8px !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 5px 12px !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(220, 69, 69, 0.18) !important;
+    border-color: var(--brand-danger) !important;
+    color: #FF8F8F !important;
+}
+
+/* --- 3. Cards & Containers --- */
+.card, .card-custom {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: var(--shadow-card) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Subtle elevation when cards are interactive */
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* --- 4. Form Controls, Inputs & Selects --- */
+.form-control, .form-select {
+    background-color: #FFFFFF !important;
+    border: 1.5px solid var(--border-color) !important;
+    border-radius: var(--control-radius) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    padding: 0.6rem 0.9rem !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.12) !important;
+    outline: none !important;
+}
+
+.form-control-lg, .form-select-lg {
+    border-radius: 12px !important;
+    font-size: 0.98rem !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.form-label {
+    color: var(--text-primary) !important;
+    margin-bottom: 0.4rem !important;
+}
+
+.input-group-text {
+    background-color: var(--bg-surface) !important;
+    border: 1.5px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    border-radius: var(--control-radius) !important;
+}
+
+/* File input styling */
+input[type="file"].form-control {
+    padding: 0.5rem 0.8rem !important;
+}
+
+/* --- 5. Buttons --- */
+.btn {
+    border-radius: var(--control-radius) !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    letter-spacing: -0.01em;
+    padding: 0.55rem 1.15rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.8rem !important;
+    border-radius: 8px !important;
+}
+
+/* Primary Button (#1677FF) */
+.btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(22, 119, 255, 0.24) !important;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--brand-primary-hover) !important;
+    border-color: var(--brand-primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 119, 255, 0.32) !important;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Danger Button (#DC4545) */
+.btn-danger {
+    background-color: var(--brand-danger) !important;
+    border-color: var(--brand-danger) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(220, 69, 69, 0.2) !important;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #c93636 !important;
+    border-color: #c93636 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(220, 69, 69, 0.3) !important;
+}
+
+/* Success Button (#168B60) */
+.btn-success {
+    background-color: var(--brand-accent) !important;
+    border-color: var(--brand-accent) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(22, 139, 96, 0.2) !important;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: #127551 !important;
+    border-color: #127551 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 139, 96, 0.3) !important;
+}
+
+/* Outline Buttons */
+.btn-outline-primary {
+    border: 1.5px solid var(--brand-primary) !important;
+    color: var(--brand-primary) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--brand-primary) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2) !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    border: 1.5px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    background-color: #FFFFFF !important;
+}
+
+.btn-outline-secondary:hover {
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-primary) !important;
+    background-color: rgba(22, 119, 255, 0.04) !important;
+}
+
+/* --- 6. Tables --- */
+.table-responsive {
+    border-radius: 12px !important;
+    border: 1px solid var(--border-color) !important;
+    overflow: hidden !important;
+    background: #FFFFFF !important;
+}
+
+.table {
+    margin-bottom: 0 !important;
+    color: var(--text-primary) !important;
+}
+
+.table-light, thead.table-light th {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-secondary) !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-bottom: 1.5px solid var(--border-color) !important;
+    padding: 13px 16px !important;
+}
+
+.table td {
+    padding: 14px 16px !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    font-size: 0.88rem !important;
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #F8FAFD !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* --- 7. Badges (Pill style with soft tints) --- */
+.badge {
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    padding: 4px 9px !important;
+    border-radius: var(--badge-radius) !important;
+    font-size: 0.75rem !important;
+    line-height: 1.25;
+}
+
+.badge.bg-success {
+    background-color: rgba(22, 139, 96, 0.12) !important;
+    color: var(--brand-accent) !important;
+    border: 1px solid rgba(22, 139, 96, 0.28) !important;
+}
+
+.badge.bg-warning {
+    background-color: rgba(245, 185, 66, 0.15) !important;
+    color: #A06B00 !important;
+    border: 1px solid rgba(245, 185, 66, 0.35) !important;
+}
+
+.badge.bg-danger {
+    background-color: rgba(220, 69, 69, 0.12) !important;
+    color: var(--brand-danger) !important;
+    border: 1px solid rgba(220, 69, 69, 0.25) !important;
+}
+
+.badge.bg-primary {
+    background-color: rgba(22, 119, 255, 0.12) !important;
+    color: var(--brand-primary) !important;
+    border: 1px solid rgba(22, 119, 255, 0.25) !important;
+}
+
+.badge.bg-dark {
+    background-color: #242933 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.badge.bg-secondary {
+    background-color: #EFF2F6 !important;
+    color: #555E6D !important;
+    border: 1px solid #DFE3E8 !important;
+}
+
+/* --- 8. Specific Dashboard Elements --- */
+
+/* Machine Specs Summary Bar */
+#machineSpecsBar {
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 12px 18px !important;
+}
+
+/* AI Answer Box */
+#answerContent {
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 18px 22px !important;
+    color: var(--text-primary) !important;
+    font-size: 0.94rem !important;
+    line-height: 1.65 !important;
+}
+
+/* Citations Cards */
+#citationsList .card {
+    border: 1.5px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#citationsList .card:hover {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 4px 14px rgba(22, 119, 255, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+/* History List Items */
+#historyList .list-group-item {
+    background-color: #FFFFFF !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    margin-bottom: 8px !important;
+    padding: 12px 14px !important;
+    transition: all 0.15s ease !important;
+}
+
+#historyList .list-group-item:hover {
+    border-color: var(--brand-primary) !important;
+    background-color: #F8FAFD !important;
+    transform: translateX(2px);
+}
+
+/* Supervisor KPI Metric Cards */
+.card.border-start.border-primary {
+    border-left: 4px solid var(--brand-primary) !important;
+}
+.card.border-start.border-success {
+    border-left: 4px solid var(--brand-accent) !important;
+}
+.card.border-start.border-warning {
+    border-left: 4px solid var(--brand-warning) !important;
+}
+.card.border-start.border-info {
+    border-left: 4px solid var(--brand-secondary) !important;
+}
+
+/* Modal Windows */
+.modal-content {
+    border-radius: var(--card-radius) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden;
+}
+
+.modal-header.bg-dark {
+    background-color: var(--bg-dark-nav) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Footer */
+footer {
+    background-color: #FFFFFF !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    font-size: 0.82rem !important;
+    padding: 14px 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: var(--bg-dark-nav);
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+    .navbar-nav .nav-link {
+        margin: 4px 0 !important;
+    }
+}
+
